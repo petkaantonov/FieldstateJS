@@ -152,6 +152,14 @@
     
      <form id="fields5" data-fieldstate="true">
          <input name="text&quot;" type="text" value="asd">
+         
+         <input type="button" name="button" value="asd">
+         <input type="file" name="file" value="asd">
+         <input type="hidden" name="hidden" value="asd">
+         <input type="image" name="image" value="asd">
+         <input type="reset" name="reset" value="asd">
+         <input type="submit" name="submit" value="asd">
+         
     </form>
 </div>
 
@@ -169,7 +177,7 @@ var invalidTypes = {
     "submit": 0
 }
 
-function saveAndRestoreNewForm( form ) {
+function saveAndRestoreNewForm( form, beforeRestore ) {
     form = $(form);
     form.fieldstate("save");
     var parent = form.parent();
@@ -197,6 +205,9 @@ function saveAndRestoreNewForm( form ) {
             $(this).val("");
         }
     });
+    if( typeof beforeRestore == "function" ) {
+        beforeRestore.call( ret );
+    }
     ret.fieldstate("restore");
     return ret;
 }
@@ -263,15 +274,7 @@ test( "Various input types", function() {
 
 });
 
-test( "Edge types", function() {
-    var testForm = saveAndRestoreNewForm($("#fields5")),
-        inputs = $("input", testForm);
-        
-    equal( inputs.eq(0).val(), "asd", "Input with quote in name restored correctly");
-
-});
-
-asyncTest( "Event triggered", 1, function() {
+asyncTest( "Events must be triggered", 1, function() {
     var form = $("<form id='event-triggers'>").append(
         $("<input>", {name: 'saved', type: "text", value:"hi"}),
         $("<input>", {name: 'nosaved', type: "text", value:"hi2"}).attr("data-fieldstate", "false")
@@ -291,10 +294,26 @@ asyncTest( "Event triggered", 1, function() {
     setTimeout( function() {
         form.fieldstate("restore");
     }, 13);
-    
-    
-    
 });
+
+test( "Edge types/Stupid usage", function() {
+    var unsupportedTypeWasNotChanged = true;
+
+    var testForm = saveAndRestoreNewForm($("#fields5"), function(){
+        this.find("input:gt(0)").on("fieldstate:restored", function(){
+            unsupportedTypeWasNotChanged = false;
+        });
+    }),
+        inputs = $("input", testForm);
+        
+    equal( inputs.eq(0).val(), "asd", "Input with quote in name restored correctly");
+    
+    ok( unsupportedTypeWasNotChanged, "invalid input types' values must not be restored" );
+    
+
+});
+
+
 
 QUnit.done( function(){
     $("#forms").remove();
