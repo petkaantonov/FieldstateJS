@@ -100,7 +100,6 @@ THE SOFTWARE.
                 else {
                     $elems.val( items[key] );                
                 }
-                
                 $elems.trigger("fieldstate:restored");
             }
             
@@ -119,9 +118,10 @@ THE SOFTWARE.
             $( '[name][data-fieldstate!="false"]', this.element ).each( function(){
                 var name = this.name, value, type = this.type && this.type.toLowerCase() || "";
                 
-                if( type in invalidTypes ) {
+                if( invalidTypes[type] === 0 ) {
                     return;
                 }
+                
                 if( name && $(this).is("input,select,textarea") ) {
                     
                     value = type === "radio" || type === "checkbox" ? !!this.checked : $(this).val();
