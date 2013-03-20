@@ -39,19 +39,8 @@ THE SOFTWARE.
     }
 
     function FieldState( form ) {
-
-        if( !form ) {
-            this.element = document.createElement("form");
-        }
-        else if( "jquery" in form ) {
-            this.element = form.filter("form")[0];
-        }
-        else if( "appendChild" in form ) {
-            this.element = form;
-        }
-        
-        form = this.element;
-        this.identifier = (form.id + "");
+        this.element = $(form);
+        this.identifier = (this.element.prop("id") + "");
     }
 
 
@@ -64,6 +53,7 @@ THE SOFTWARE.
             if( !items ) {
                 return;
             }
+            
             try {
                 items = $.parseJSON( items );
             }
