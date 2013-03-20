@@ -177,16 +177,14 @@ function saveAndRestoreNewForm( form ) {
     form.remove();
     parent.append(ret);
     $( '[name][data-fieldstate!="false"]', ret).filter("input,select,textarea").each( function() {
-    
-        
-    
+
         var name = this.name, value, type = this.type && this.type.toLowerCase() || "",
             nodeName = this.nodeName.toLowerCase();
         
-        if( type in invalidTypes ) {
+        if( invalidTypes[type] === 0 ) {
             return;
         }
-        
+
         checkbox = type === "radio" || type === "checkbox";
         
         if( checkbox ) {
@@ -271,6 +269,31 @@ test( "Edge types", function() {
         
     equal( inputs.eq(0).val(), "asd", "Input with quote in name restored correctly");
 
+});
+
+asyncTest( "Event triggered", 1, function() {
+    var form = $("<form id='event-triggers'>").append(
+        $("<input>", {name: 'saved', type: "text", value:"hi"}),
+        $("<input>", {name: 'nosaved', type: "text", value:"hi2"}).attr("data-fieldstate", "false")
+        
+    );
+    form.fieldstate("save");
+    $("[name=saved]", form).on("fieldstate:restored", function(){
+        ok( true, "Event triggered");
+        start();
+    });
+    
+    $("[name=nosaved]", form).on("fieldstate:restored", function(){
+        ok( false, "Event must not be triggered");
+        start();
+    });
+    
+    setTimeout( function() {
+        form.fieldstate("restore");
+    }, 13);
+    
+    
+    
 });
 
 QUnit.done( function(){
