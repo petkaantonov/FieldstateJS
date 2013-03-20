@@ -24,6 +24,15 @@ THE SOFTWARE.
     function escapeForQuote( str ) {
         return (str + "").replace( /(\\|")/g, "\\$1" );
     }
+    
+    var invalidTypes = {
+        "button": 0,
+        "file": 0,
+        "hidden": 0,
+        "image": 0,
+        "reset": 0,
+        "submit": 0
+    };
 
     var returnNull = function() {
         return null;
@@ -107,9 +116,12 @@ THE SOFTWARE.
             }
             
             var obj = {};
-            $( '[name][type!="hidden"][type!="file"][data-fieldstate!="false"]', this.element ).each( function(){
+            $( '[name][data-fieldstate!="false"]', this.element ).each( function(){
                 var name = this.name, value, type = this.type && this.type.toLowerCase() || "";
-                    
+                
+                if( type in invalidTypes ) {
+                    return;
+                }
                 if( name && $(this).is("input,select,textarea") ) {
                     
                     value = type === "radio" || type === "checkbox" ? !!this.checked : $(this).val();
@@ -155,7 +167,6 @@ THE SOFTWARE.
     };
     
     $.fn.fieldstate.Constructor = FieldState;
-    
     $( function() {
         $( "form[data-fieldstate]" ).fieldstate().on( {
             submit: function() {

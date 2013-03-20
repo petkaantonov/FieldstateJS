@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="../qunitjs/qunit/qunit.css">
+</head>
+<body>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="../fieldstate.js" type="text/javascript"></script>
+<script src="../qunitjs/qunit/qunit.js" type="text/javascript"></script>
+<div id="qunit"></div>
+<div id="forms">
+    <form id="fields1" data-fieldstate="true">
+        <select name="multiple-some-selected" multiple="multiple">
+            <option value="1">2</option>
+            <option value="3">4</option>
+            <option value="5" selected="selected">6</option>
+            <option value="7" selected="selected">8</option>
+            <option value="9">10</option>
+            <option value="11" selected="selected">12</option>
+            <option value="13" selected="selected">14</option>
+            <option value="15">16</option>
+            <option value="17" selected="selected">18</option>
+            <option value="19">20</option>
+            <option value="21">22</option>
+            <option value="23">24</option>
+        </select>
+        <select name="multiple-one-selected" multiple="multiple">
+            <option value="1">2</option>
+            <option value="3">4</option>
+            <option value="5" >6</option>
+            <option value="7" >8</option>
+            <option value="9">10</option>
+            <option value="11" >12</option>
+            <option value="13" >14</option>
+            <option value="15">16</option>
+            <option value="17" selected="selected">18</option>
+            <option value="19">20</option>
+            <option value="21">22</option>
+            <option value="23">24</option>
+        </select>
+        <select name="multiple-same-value" multiple="multiple">
+            <option value="xxx">xxx</option>
+            <option value="xxx">xxx</option>
+            <option value="xxx" selected="selected">xxx</option>
+            <option value="xxx" selected="selected">xxx</option>
+            <option value="xxx">xxx</option>
+            <option value="xxx" selected="selected">xxx</option>
+            <option value="xxx" selected="selected">xxx</option>
+            <option value="xxx">xxx</option>
+            <option value="xxx" selected="selected">xxx</option>
+            <option value="xxx">xxx</option>
+            <option value="xxx">xxx</option>
+            <option value="xxx">xxx</option>
+        </select>
+        <select name="multiple-no-selected" multiple="multiple">
+            <option value="1">2</option>
+            <option value="3">4</option>
+            <option value="5">6</option>
+            <option value="7">8</option>
+            <option value="9">10</option>
+            <option value="11">12</option>
+            <option value="13">14</option>
+            <option value="15">16</option>
+            <option value="17">18</option>
+            <option value="19">20</option>
+            <option value="21">22</option>
+            <option value="23">24</option>
+        </select>
+    </form>
+    
+    <form id="fields2" data-fieldstate="true">
+        <select name="single-no-selected">
+            <option value="1">2</option>
+            <option value="3">4</option>
+            <option value="5">6</option>
+            <option value="7">8</option>
+            <option value="9">10</option>
+            <option value="11">12</option>
+            <option value="13">14</option>
+            <option value="15">16</option>
+            <option value="17">18</option>
+            <option value="19">20</option>
+            <option value="21">22</option>
+            <option value="23">24</option>
+        </select>
+        <select name="single-one-selected">
+            <option value="1">2</option>
+            <option value="3">4</option>
+            <option value="5">6</option>
+            <option selected="selected" value="7">8</option>
+            <option value="9">10</option>
+            <option value="11">12</option>
+            <option value="13">14</option>
+            <option value="15">16</option>
+            <option value="17">18</option>
+            <option value="19">20</option>
+            <option value="21">22</option>
+            <option value="23">24</option>
+        </select>
+        <select name="single-many-selected">
+            <option value="1">2</option>
+            <option value="3">4</option>
+            <option value="5">6</option>
+            <option selected="selected" value="7">8</option>
+            <option value="9">10</option>
+            <option value="11">12</option>
+            <option value="13">14</option>
+            <option selected="selected" value="15">16</option>
+            <option value="17">18</option>
+            <option value="19">20</option>
+            <option value="21">22</option>
+            <option value="23">24</option>
+        </select>
+    </form>
+    
+    <form id="fields3" data-fieldstate="true">
+        <input name="checkbox" type="checkbox">
+        <input name="checkbox" type="checkbox" checked="checked">
+        <input name="checkbox" type="checkbox">
+        <input name="checkbox" type="checkbox" checked="checked">
+
+        <input name="radio" type="radio">
+        <input name="radio" type="radio" checked="checked">
+        <input name="radio" type="radio">
+        <input name="radio" type="radio">
+    </form>
+    
+    <form id="fields4" data-fieldstate="true">
+        <input name="text" type="text" value="asd">
+        
+
+        
+        <input name="color" type="color" value="#fffabb">
+        
+        <input name="date" type="date" value="2015-08-08">
+        
+        <input name="email" type="email" value="asd@asd.com">
+        
+        <input name="number" type="number" value="0.5">
+        
+        <input type="password" name="password" value="asd">
+        
+        <input type="range" name="range" value="20">
+        
+        <input type="search" name="search" value="query">
+        
+        <input type="tel" name="tel" value="213144231">
+        
+        <input type="url" name="url" value="http://www.url.com">
+    </form>
+    
+     <form id="fields5" data-fieldstate="true">
+         <input name="text&quot;" type="text" value="asd">
+    </form>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+var invalidTypes = {
+    "button": 0,
+    "file": 0,
+    "hidden": 0,
+    "image": 0,
+    "reset": 0,
+    "submit": 0
+}
+
+function saveAndRestoreNewForm( form ) {
+    form = $(form);
+    form.fieldstate("save");
+    var parent = form.parent();
+    var ret = form.clone();
+    form.remove();
+    parent.append(ret);
+    $( '[name][data-fieldstate!="false"]', ret).filter("input,select,textarea").each( function() {
+    
+        
+    
+        var name = this.name, value, type = this.type && this.type.toLowerCase() || "",
+            nodeName = this.nodeName.toLowerCase();
+        
+        if( type in invalidTypes ) {
+            return;
+        }
+        
+        checkbox = type === "radio" || type === "checkbox";
+        
+        if( checkbox ) {
+            this.checked = !this.checked;
+        }
+        else if( nodeName === "select" ) {
+            $(this).val( $(this).attr("multiple") === "multiple" ? [] : "");
+        }
+        else {
+            $(this).val("");
+        }
+    });
+    ret.fieldstate("restore");
+    return ret;
+}
+
+test( "Multiple selects", function() {
+    var testForm = saveAndRestoreNewForm($("#fields1")),
+        selects = testForm.find("[name]");
+    deepEqual(selects.eq(0).val(), ["5", "7", "11", "13", "17"], "Multiple select values in multiple select restored correctly");
+    deepEqual(selects.eq(1).val(), ["17"], "Single select value in multiple select restored correctly");
+    deepEqual(
+        selects.eq(2).val(), 
+        ["xxx", "xxx", "xxx", "xxx", "xxx", "xxx", "xxx", "xxx", "xxx", "xxx", "xxx", "xxx"],
+        "Multiple same select values in multiple select restored correctly"
+    );
+    equal(
+        selects.eq(3).val(), 
+        null,
+        "no select values in multiple select restored correctly"
+    );
+});
+
+
+test( "Single selects", function() {
+    var testForm = saveAndRestoreNewForm($("#fields2")),
+        selects = testForm.find("[name]");
+    
+    equal( selects.eq(0).val(), "1", "No selected value in single select restored correctly");
+    equal( selects.eq(1).val(), "7", "Single selected value in single select restored correctly");
+    equal( selects.eq(2).val(), "15", "Multiple selected value in single select restored correctly");
+});
+
+test( "Radio and checkboxes", function() {
+    var testForm = saveAndRestoreNewForm($("#fields3")),
+        checkboxes = $("[type=checkbox]", testForm),
+        radios = $("[type=radio]", testForm );
+        
+    equal( checkboxes[0].checked, false, "Checkbox checked restored correctly" );
+    equal( checkboxes[1].checked, true, "Checkbox checked restored correctly" );
+    equal( checkboxes[2].checked, false, "Checkbox checked restored correctly" );
+    equal( checkboxes[3].checked, true, "Checkbox checked restored correctly" );
+    
+    equal( radios[0].checked, false, "Radio checked restored correctly" );
+    equal( radios[1].checked, true, "Radio checked restored correctly" );
+    equal( radios[2].checked, false, "Radio checked restored correctly" );
+    equal( radios[3].checked, false, "Radio checked restored correctly" );
+
+});
+
+test( "Various input types", function() {
+    var testForm = saveAndRestoreNewForm($("#fields4")),
+        inputs = $("input", testForm);
+        
+    equal( inputs.eq(0).val(), "asd", "Text input restored correctly" );
+    equal( inputs.eq(1).val(), "#fffabb", "Color input restored correctly" );
+    equal( inputs.eq(2).val(), "2015-08-08", "Date input restored correctly" );
+    equal( inputs.eq(3).val(), "asd@asd.com", "Email input restored correctly" );
+    equal( inputs.eq(4).val(), "0.5", "Number input restored correctly" );
+    equal( inputs.eq(5).val(), "asd", "Passowrd input restored correctly" );
+    equal( inputs.eq(6).val(), "20", "Range input restored correctly" );
+    equal( inputs.eq(7).val(), "query", "Search input restored correctly" );
+    equal( inputs.eq(8).val(), "213144231", "Telephone input restored correctly" );
+    equal( inputs.eq(9).val(), "http://www.url.com", "Url input restored correctly" );
+
+
+});
+
+test( "Edge types", function() {
+    var testForm = saveAndRestoreNewForm($("#fields5")),
+        inputs = $("input", testForm);
+        
+    equal( inputs.eq(0).val(), "asd", "Input with quote in name restored correctly");
+
+});
+
+QUnit.done( function(){
+    $("#forms").remove();
+});
+</script>
+
+</body>
+
