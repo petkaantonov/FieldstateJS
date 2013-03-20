@@ -21,6 +21,10 @@ THE SOFTWARE.
 */
 (function( global, $ ) {
 
+    function escapeForQuote( str ) {
+        return (str + "").replace( /(\\|")/g, "\\$1" );
+    }
+
     var returnNull = function() {
         return null;
     };
@@ -34,7 +38,7 @@ THE SOFTWARE.
         };
     }
 
-    function FormFields( form ) {
+    function FieldState( form ) {
 
         if( !form ) {
             this.element = document.createElement("form");
@@ -51,7 +55,7 @@ THE SOFTWARE.
     }
 
 
-    FormFields.prototype = {
+    FieldState.prototype = {
     
         restore: function() {
             var items = global.localStorage.getItem( this.identifier ),
@@ -60,17 +64,21 @@ THE SOFTWARE.
             if( !items ) {
                 return;
             }
-            
-            items = JSON.parse( items );
+            try {
+                items = $.parseJSON( items );
+            }
+            catch( error ) {
+                return;
+            }
             
             for( var key in items ) {
                 storedValue = items[key];
                 storedValueType = $.type( storedValue );
+
+                $elems = $( '[name="' + escapeForQuote(key)  + '"]', this.element );
                 
-                if( storedValueType === "array" ) { //Multiple elements with same name
+                if( storedValueType === "array" ) { //Multiple elements with same name or single element with multiple values
                 
-                    $elems = $( '[name="' + key + '"]', this.element );
-                    
                     if( $elems.length === 1 ) { // A single element with multiple values
                         $elems.val( storedValue );
                     }
@@ -78,21 +86,23 @@ THE SOFTWARE.
                         $elems.each( $.proxy( function(index, elem){
                             var value = this[index];
 
-                            if( typeof value === "boolean" ) {
+                            if( typeof value === "boolean" ) {  //Radio/Checkbox
                                 elem.checked = value;
                             }
                             else {
-                                $( elem ).val( value );
+                                $( elem ).val( value )
                             }
                         }, storedValue ) );
-                    }
+                    } 
                 }
-                else if( storedValueType === "boolean" ) { //Radio/Checkbox. Cannot use .val
-                    this.element[key].checked = storedValue;
+                else if( storedValueType === "boolean" ) { //Radio/Checkbox
+                    $elems.prop("checked", storedValue);
                 }
                 else {
-                    $( this.element[key] ).val( items[key] );                
+                    $elems.val( items[key] );                
                 }
+                
+                $elems.trigger("fieldstate:restored");
             }
             
         },
@@ -107,8 +117,8 @@ THE SOFTWARE.
             }
             
             var obj = {};
-            $( '[name][type!="hidden"][type!="file"][data-persist-fieldstate!="false"]', this.element ).each( function(){
-                var name = this.name, value, type = this.type.toLowerCase();
+            $( '[name][type!="hidden"][type!="file"][data-fieldstate!="false"]', this.element ).each( function(){
+                var name = this.name, value, type = this.type && this.type.toLowerCase() || "";
                     
                 if( name && $(this).is("input,select,textarea") ) {
                     
@@ -129,18 +139,18 @@ THE SOFTWARE.
             global.localStorage.setItem( this.identifier, global.JSON.stringify( obj ) );
         },
 
-        constructor: FormFields
+        constructor: FieldState
     };
     
-    $.fn.fields = function( option ) {
+    $.fn.fieldstate = function( option ) {
     
         return this.filter( "form" ).each( function() {
         
             var $this = $(this),
-                instance = $this.data( "formfields-instance" );
+                instance = $this.data( "FieldState-instance" );
             
             if( !instance ) {
-                $this.data( "formfields-instance", ( instance = new FormFields( this ) ) );
+                $this.data( "FieldState-instance", ( instance = new FieldState( this ) ) );
                 if( !option ) {
                     option = $this.data( "fieldstate" );
                 }
@@ -154,25 +164,25 @@ THE SOFTWARE.
     
     };
     
-    $.fn.fields.Constructor = FormFields;
+    $.fn.fieldstate.Constructor = FieldState;
     
     $( function() {
-        $( "form[data-fieldstate]" ).fields().on( {
+        $( "form[data-fieldstate]" ).fieldstate().on( {
             submit: function() {
-                $(this).fields("save");
+                $(this).fieldstate("save");
             },
             
             reset: function() {
-                $(this).fields("clear");
+                $(this).fieldstate("clear");
             },
             
             change: function() {
-                $(this).fields("save");
+                $(this).fieldstate("save");
             }
         });
         
         $( window ).on( "beforeunload", function(){
-            $( "form[data-fieldstate]" ).fields("save");
+            $( "form[data-fieldstate]" ).fieldstate("save");
         });
     });
     
