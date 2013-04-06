@@ -38,8 +38,8 @@ THE SOFTWARE.
         return null;
     };
         
-    if( !global.localStorage ) {
-        global.localStorage = {
+    if( !global.sessionStorage ) {
+        global.sessionStorage = {
             getItem: returnNull,        
             setItem: returnNull,        
             removeItem: returnNull,
@@ -56,7 +56,7 @@ THE SOFTWARE.
     FieldState.prototype = {
     
         restore: function() {
-            var items = global.localStorage.getItem( this.identifier ),
+            var items = global.sessionStorage.getItem( this.identifier ),
                 storedValue, storedValueType, $elems;
             
             if( !items ) {
@@ -106,7 +106,7 @@ THE SOFTWARE.
         },
         
         clear: function() {
-            global.localStorage.removeItem( this.identifier );
+            global.sessionStorage.removeItem( this.identifier );
         },
         
         save: function() {
@@ -138,7 +138,7 @@ THE SOFTWARE.
                 }
             });
             
-            global.localStorage.setItem( this.identifier, global.JSON.stringify( obj ) );
+            global.sessionStorage.setItem( this.identifier, global.JSON.stringify( obj ) );
         },
 
         constructor: FieldState
